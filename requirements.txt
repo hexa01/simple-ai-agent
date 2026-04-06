@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+langchain
+langchain-community
+requests
+openrouter
+langchain-huggingface
+ddgs
+simpleeval
+langgraph
+pydantic
+dotenv
+langchain-openrouter
+

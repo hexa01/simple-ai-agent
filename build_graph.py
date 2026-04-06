@@ -1,0 +1,21 @@
+# build_graph.py
+
+from langgraph.graph import StateGraph, START
+from langgraph.prebuilt import ToolNode, tools_condition
+from agents import agent_node, AgentState
+from tools import calculator, web_search
+
+tools = [calculator, web_search]
+
+# nodes
+builder = StateGraph(AgentState)
+builder.add_node("assistant",agent_node)
+builder.add_node("tools",ToolNode(tools))
+
+#edges
+builder.add_edge(START,"assistant")
+builder.add_conditional_edges("assistant",tools_condition)
+builder.add_edge("tools","assistant")
+
+react_agent = builder.compile()
+
