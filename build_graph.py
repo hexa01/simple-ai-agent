@@ -3,9 +3,9 @@
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
 from agents import agent_node, AgentState
-from tools import calculator, web_search
+from tools import calculator, web_search, fetch_page, wikipedia_search, get_wikipedia_section
 
-tools = [calculator, web_search]
+tools = [calculator, web_search, fetch_page, wikipedia_search, get_wikipedia_section]
 
 # nodes
 builder = StateGraph(AgentState)

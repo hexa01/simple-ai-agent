@@ -6,7 +6,7 @@ from langchain_core.messages import BaseMessage, SystemMessage
 from langgraph.graph.message import add_messages
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from tools import calculator, web_search
+from tools import calculator, web_search, fetch_page, wikipedia_search, get_wikipedia_section
 from prompts import SYSTEM_PROMPT
 
 load_dotenv()
@@ -27,7 +27,7 @@ model = ChatOpenRouter(
     max_retries=MAX_RETRIES,
 )
 
-tools = [calculator, web_search]
+tools = [calculator, web_search, fetch_page, wikipedia_search, get_wikipedia_section]
 
 model_with_tools = model.bind_tools(tools)
 
