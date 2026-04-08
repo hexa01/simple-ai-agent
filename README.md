@@ -92,6 +92,35 @@ Overall Score: 42.0% (7/10 correct)
 Message: ...
 ```
 
+## Future Enhancements
+
+The agent currently skips questions that include file attachments. The following tools are planned to close that gap:
+
+### 🎵 Audio File Handling
+- **Tool:** `transcribe_audio`
+- Accepts audio files (`.mp3`, `.wav`, `.m4a`, etc.) attached to benchmark questions
+- Transcribes speech to text using the [OpenAI Whisper API](https://platform.openai.com/docs/guides/speech-to-text) or a local Whisper model (`openai-whisper`)
+- The transcript is passed back into the agent's context so it can answer questions about the audio content
+
+### 🖼️ Image Understanding
+- **Tool:** `analyze_image`
+- Accepts image files (`.png`, `.jpg`, `.jpeg`, `.gif`, etc.) attached to benchmark questions
+- Sends the image to a vision-capable model (e.g. GPT-4o with image input) and returns a detailed description or a direct answer to the question about the image
+- Handles charts, diagrams, screenshots, and photos
+
+### 🎬 YouTube Video Transcription
+- **Tool:** `get_youtube_transcript`
+- Accepts a YouTube URL or video ID
+- Retrieves the video transcript using the [`youtube-transcript-api`](https://github.com/jdepoix/youtube-transcript-api) library (no API key required for videos with captions)
+- Falls back to downloading the audio and running Whisper transcription for videos without auto-generated captions
+- Enables the agent to answer questions about video content, interviews, lectures, and tutorials
+
+### Integration plan
+Once the tools above are implemented:
+1. Add them to `tools.py` following the same `@tool` decorator pattern
+2. Register them in the `tools` list in both `agents.py` and `build_graph.py`
+3. Update the file-attachment branch in `app.py` to route questions with a `file_name` through the appropriate tool based on file extension or MIME type
+
 ## Notes
 
 - Questions that include file attachments (`file_name` field) currently return a default placeholder answer. Adding file-handling tools would improve coverage on those questions.
