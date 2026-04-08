@@ -12,8 +12,15 @@ logger = logging.getLogger(__name__)
 
 @tool
 def calculator(expr: str) -> str:
-    """Evaluate a mathematical expression safely. Examples: '5+10', '14000/2000', '(3**2)*4'.
-    Never compute math yourself — always use this tool.
+    """Evaluate a mathematical expression safely.
+
+    Use this tool for ANY arithmetic or numeric computation.
+    DO NOT perform math reasoning yourself — always call this tool.
+
+    Examples:
+    - '5+10'
+    - '14000/2000'
+    - '(3**2)*4'
     """
     try:
         result = simple_eval(expr)
@@ -28,8 +35,19 @@ def calculator(expr: str) -> str:
 
 @tool
 def web_search(query: str) -> str:
-    """Search the web for current, factual information using DuckDuckGo.
-    Use for recent events, facts, or anything requiring up-to-date information.
+    """Search the web using DuckDuckGo and return top results.
+
+    Use ONLY when:
+    - Information is recent (news, current events)
+    - Wikipedia is insufficient or unavailable
+    - You need external sources beyond encyclopedic knowledge
+
+    DO NOT use for:
+    - General knowledge → use wikipedia_search instead
+    - Known entities (people, places, events) → use wikipedia_search first
+    - Specific URLs → use fetch_page
+
+    Returns top 3 results with title, URL, and summary.
     """
     try:
         with DDGS() as ddgs:
@@ -53,13 +71,19 @@ def web_search(query: str) -> str:
 
 @tool
 def fetch_page(url: str) -> str:
-    """Fetch and return the main text content of any webpage by URL.
-    Use this when you have a specific URL from search results and need
-    the full content, not just the snippet.
-    Use for: news articles, government pages, research papers, any non-Wikipedia URL.
-    Do NOT use for Wikipedia URLs — use wikipedia_search instead.
-    Requires: a full URL starting with https://
-    Example: fetch_page("https://www.bbc.com/news/science-12345")
+    """Fetch and extract main content from a webpage URL.
+
+    Use ONLY when:
+    - You already have a specific URL
+    - You need full content (not just a summary)
+
+    DO NOT use for:
+    - Wikipedia URLs → use wikipedia_search instead
+    - General search → use web_search first
+
+    Input must be a full URL (https://...)
+
+    Returns cleaned article text (truncated if too long)
     """
     MAX_PAGE_CHARS = 8000
     REQUEST_TIMEOUT = 10
@@ -99,23 +123,26 @@ def fetch_page(url: str) -> str:
 
 @tool
 def wikipedia_search(query: str) -> str:
-    """Search Wikipedia for factual information about people, places,
-    events, concepts, history, or science.
-    Use this when:
-    - The question references Wikipedia explicitly
-    - You need reliable encyclopedic facts
-    - The topic is a named entity, event, or concept
-    Prefer this over fetch_page for any Wikipedia content.
-    Pass the topic name, not a URL.
-    Example: wikipedia_search("2020 Summer Olympics")
-    Example: wikipedia_search("Marie Curie")
+    """Search Wikipedia for factual, encyclopedic information.
+
+    Use for:
+    - People, places, events, concepts
+    - When reliable general knowledge is needed
+
+    Prefer this over web_search for known entities.
+
+    Returns:
+    - Article title and URL
+    - Summary
+    - Available sections
+    - Full content (may be truncated)
     """
     MAX_WIKI_CHARS= 8000
     REQUEST_TIMEOUT = 10
     try:
         wiki = wikipediaapi.Wikipedia(
             language = "en",
-            user_agent = "MyPersonalResearchBot/1.0 (sushanpoudel80@gmail.com)",
+            user_agent = "MyPersonalResearchBot/1.0",
             extract_format = wikipediaapi.ExtractFormat.WIKI
         )
 
@@ -126,8 +153,9 @@ def wikipedia_search(query: str) -> str:
 
             if not search_results:
                 return f"No wikipedia article found for {query}. Try different search term."
+            titles = list(search_results)
             
-            page = wiki.page(search_results[0]) #most relevant search term
+            page = wiki.page(titles[0]) #most relevant search term
 
             if not page.exists():
                 return (
@@ -172,7 +200,7 @@ def get_wikipedia_section(article_title: str, section_name: str) -> str:
     try:
         wiki = wikipediaapi.Wikipedia(
             language = "en",
-            user_agent = "MyPersonalResearchBot/1.0 (sushanpoudel80@gmail.com)",
+            user_agent = "MyPersonalResearchBot/1.0",
             extract_format = wikipediaapi.ExtractFormat.WIKI
         )
         page = wiki.page(article_title)

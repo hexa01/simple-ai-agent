@@ -1,14 +1,19 @@
-fastapi
-uvicorn
-langchain
-langchain-community
-requests
-openrouter
-langchain-huggingface
+# Core agent & LangChain ecosystem
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-openai>=0.1.0
+langgraph>=0.0.40
+
+
+# Environment variables
+python-dotenv
+
+# Tool dependencies
 ddgs
 simpleeval
-langgraph
-pydantic
-dotenv
-langchain-openrouter
+requests
+wikipedia-api
+trafilatura
 
+# Data validation / models
+pydantic>=2.0
